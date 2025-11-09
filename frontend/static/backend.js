@@ -10,6 +10,7 @@ const graphView = document.getElementById('graphView');
 const toggleViewBtn = document.getElementById('toggleViewBtn');
 const renameBtn = document.getElementById('renameBtn');
 const deleteBtn = document.getElementById('deleteBtn');
+const uploadBtn = document.getElementById('uploadBtn');
 
 // Utility: create id
 const makeId = () => 'f' + Date.now() + Math.floor(Math.random()*1000);
@@ -517,6 +518,71 @@ console.error('Failed to load classes:', err);
 }
 }
 
+// Combined upload → /read-file → /store pipeline
+async function uploadSummarizeAndStore(file, className) {
+  // Step 1. Upload to /read-file
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const readResp = await fetch(`http://127.0.0.1:8000/read-file`, {
+    method: 'POST',
+    body: formData
+  });
+
+  if (!readResp.ok) {
+    const errText = await readResp.text();
+    throw new Error(`Error during /read-file: ${errText}`);
+  }
+
+  const summary = await readResp.json();
+  console.log(summary);
+
+  // Step 2. Send summarized data to /store
+ const payload = {
+  Class: summary.Class,
+  Topics: summary.Topics || {},
+  raw_text: summary.raw_text || summary.text || ''
+};
+  console.log(payload)
+  const storeResp = await fetch(`http://127.0.0.1:8000/store`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  if (!storeResp.ok) {
+    const errText = await storeResp.text();
+    throw new Error(`Error during /store: ${errText}`);
+  }
+
+  const result = await storeResp.json();
+  return result; // expected: { class_id: ... }
+}
+
+// Attach to button
+
+uploadBtn.addEventListener('click', () => {
+  fileInput.click(); // this opens the file chooser dialog
+});
+
+// 2️⃣ When user selects a file, automatically process it
+fileInput.addEventListener('change', async () => {
+  const file = fileInput.files[0];
+  if (!file) return; // user canceled
+
+  try {
+    // If backend handles class name automatically, no need to pass it manually
+    const result = await uploadSummarizeAndStore(file, '');
+
+  } catch (err) {
+    console.error(err);
+
+  } finally {
+    fileInput.value = ''; // reset so user can pick same file again
+  }
+});
+
+
 // Track the current state (start with hierarchy)
 let showingHierarchy = true;
 
@@ -544,4 +610,5 @@ loadClassesAsNotes();
 // initial demo files
 
 // Select the most recent file
+console.log(fileStore[0].id)
 if (fileStore.length) selectFile(fileStore[0].id);

@@ -40,6 +40,7 @@ class NoteAI:
         # quick clean & parse
         import json, re
         try:
+            print(txt)
             return json.loads(txt)
         except Exception:
             # try to extract JSON if model wrapped it in code fences
