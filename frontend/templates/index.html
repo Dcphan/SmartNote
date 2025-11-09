@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>C Notes Mindmap (Tailwind)</title>
+
+  <!-- Tailwind Play CDN for quick prototyping (not for production) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Cytoscape from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/cytoscape@3.24.0/dist/cytoscape.min.js"></script>
+
+  <!-- Your JS entry -->
+  <script type="module" src="static/main.js" defer></script>
+</head>
+<body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+
+  <header class="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200">
+    <h1 class="text-sm font-semibold tracking-tight">C Programming Concepts — Mindmap</h1>
+
+    <div class="flex items-center gap-3 text-sm">
+      <label class="inline-flex items-center gap-2">
+        <input id="minimalView" type="checkbox" checked class="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-500" />
+        <span>Minimal view</span>
+      </label>
+
+      <label class="inline-flex items-center gap-2">
+        <input id="extAsNodes" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-500" />
+        <span>Show extensions as nodes</span>
+      </label>
+
+      <button id="resetLayout" class="ml-2 inline-flex items-center gap-2 px-3 py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-500 focus:outline-none">Reset layout</button>
+    </div>
+  </header>
+
+  <main class="flex-1 flex min-h-0">
+    <!-- Graph canvas -->
+    <div id="cy" class="flex-1 h-[calc(100vh-64px)] border-r border-gray-200"></div>
+
+    <!-- Info panel -->
+    <aside id="info-panel" class="w-96 p-4 bg-white">
+      <h2 id="node-title" class="text-lg font-medium">Select a topic</h2>
+      <p id="node-summary" class="mt-2 text-sm text-gray-700">Click a node to see the concise main-note.</p>
+
+      <h3 class="mt-4 text-sm font-semibold text-gray-600">Extensions</h3>
+      <ul id="extensions-list" class="mt-2 space-y-2" aria-live="polite"></ul>
+
+      <div class="mt-4">
+        <button id="promoteBtn" class="inline-flex items-center gap-2 px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-500 focus:outline-none">
+          Promote first extension to main
+        </button>
+      </div>
+    </aside>
+  </main>
+
+</body>
+</html>

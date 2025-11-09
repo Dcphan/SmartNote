@@ -3,3 +3,9 @@ uvicorn[standard]
 jinja2
 aiofiles
 python-multipart
+python-docx
+PyPDF2
+openai
+python-dotenv
+supabase
+pydantic

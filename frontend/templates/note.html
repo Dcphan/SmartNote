@@ -8,8 +8,13 @@
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
+
   <!-- Marked.js for markdown rendering -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- d3.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.4/d3.min.js"></script>
+
 
   <style>
     .thin-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
@@ -55,34 +60,51 @@
       </div>
     </aside>
 
-    <!-- Main: Markdown editor / preview -->
-    <main class="flex-1 flex flex-col">
-      <div class="flex items-center justify-between gap-3 px-6 py-3 bg-white border-b">
-        <div>
-          <span id="currentTitle" class="text-lg font-semibold text-gray-800">No file selected</span>
-          <span id="currentMeta" class="ml-3 text-xs text-gray-500"></span>
-        </div>
+    <!-- Main: Notes Display (Hierarchy / Graph) -->
+<main class="flex-1 flex flex-col">
+  <!-- Top Bar -->
+  <div class="flex items-center justify-between gap-3 px-6 py-3 bg-white border-b">
+    <div>
+      <span id="currentTitle" class="text-lg font-semibold text-gray-800">No note selected</span>
+      <span id="currentMeta" class="ml-3 text-xs text-gray-500"></span>
+    </div>
 
-        <div class="flex items-center gap-3">
-          <button id="toggleEditView" class="px-3 py-1 rounded-md border text-sm bg-white">Edit</button>
-          <button id="renameBtn" class="px-3 py-1 rounded-md border text-sm bg-white">Rename</button>
-          <button id="deleteBtn" class="px-3 py-1 rounded-md border text-sm text-red-600 bg-white">Delete</button>
-        </div>
-      </div>
+    <div class="flex items-center gap-3">
+      <!-- You’ll handle toggle logic later -->
+      <button id="toggleViewBtn" class="px-3 py-1 rounded-md border text-sm bg-white">Hierarchy View</button>
+      <button id="renameBtn" class="px-3 py-1 rounded-md border text-sm bg-white">Rename</button>
+      <button id="deleteBtn" class="px-3 py-1 rounded-md border text-sm text-red-600 bg-white">Delete</button>
+    </div>
+  </div>
 
-      <div class="flex-1 overflow-auto p-6">
-        <!-- Editor area -->
-        <div id="editorArea" class="space-y-4">
-          <!-- Markdown editor (visible when editing) -->
-          <div id="mdEditor" class="">
-            <textarea id="markdownInput" class="w-full h-80 p-4 rounded-md border border-gray-200 bg-white text-sm font-mono" placeholder="# Start writing in Markdown..."></textarea>
-          </div>
+  <!-- Content Area -->
+  <div class="flex-1 overflow-auto p-6">
+    <div id="viewerArea" class="space-y-4">
+      <!-- Hierarchical Display -->
+      <section id="hierarchyView" class="bg-white p-6 rounded-md border border-gray-100 overflow-auto" style="min-height:300px;">
+        <div class="text-gray-500 text-sm">Hierarchy view (data from API will appear here)</div>
 
-          <!-- Rendered markdown (visible when previewing) -->
-          <div id="mdPreview" class="hidden prose-container prose lg:prose-lg mx-auto bg-white p-6 rounded-md border border-gray-100"></div>
-        </div>
-      </div>
-    </main>
+      </section>
+
+      <!-- Graph Display -->
+      <section id="graphView" class="hidden bg-white p-6 rounded-md border border-gray-100 overflow-hidden" style="min-height:400px;">
+        <div class="text-gray-500 text-sm text-center">Graph view (visualization from API will appear here)</div>
+        <!-- Example:
+          <svg id="notesGraph" width="100%" height="100%"></svg>
+        -->
+      </section>
+    </div>
+  </div>
+</main>
+
+<!-- Minimal styling for the hierarchy tree -->
+<style>
+  .hidden { display: none; }
+  ul.note-tree { list-style: none; margin: 0; padding-left: 1rem; }
+  ul.note-tree li { margin: 0.25rem 0; }
+  .node-key { display: inline-block; padding: 0.25rem 0.5rem; border: 1px solid #e5e7eb; border-radius: 4px; background: #f9fafb; font-weight: 500; }
+</style>
+
 
     <!-- Floating upload/create -->
     <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
